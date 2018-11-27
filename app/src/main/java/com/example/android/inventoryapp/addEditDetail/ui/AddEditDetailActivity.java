@@ -682,8 +682,8 @@ public class AddEditDetailActivity extends BaseActivity implements LoaderManager
                 increaseQuantity();
                 break;
 
-            case R.id.view_edit_bg:
             case R.id.iv_edit:
+            case R.id.view_edit_bg:
                 imagePermission();
                 break;
 

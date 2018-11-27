@@ -142,6 +142,9 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/label_unit_price"
                             android:inputType="number"
+                            android:singleLine="true"
+                            android:maxLines="1"
+                            android:imeOptions="actionNext"
                             />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -210,6 +213,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/label_product_name"
+                            android:singleLine="true"
+                            android:maxLines="1"
+                            android:imeOptions="actionNext"
                             />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -234,6 +240,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/label_supplier_name"
+                            android:singleLine="true"
+                            android:maxLines="1"
+                            android:imeOptions="actionNext"
                             />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -260,6 +269,9 @@
                             android:hint="@string/label_supplier_phone_number"
                             android:maxLength="10"
                             android:inputType="phone"
+                            android:singleLine="true"
+                            android:maxLines="1"
+                            android:imeOptions="actionDone"
                             />
 
                     </com.google.android.material.textfield.TextInputLayout>

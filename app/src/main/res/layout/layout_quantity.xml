@@ -48,6 +48,9 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/label_quantity"
                 android:inputType="number"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:imeOptions="actionNext"
                 />
 
         </com.google.android.material.textfield.TextInputLayout>
