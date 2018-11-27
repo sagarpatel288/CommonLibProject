@@ -26,7 +26,6 @@ public class CustomTextView extends AppCompatTextView {
     private CharSequence originalText;
     private float letterSpacing = Spacing.NO_CHAR_SPACE;
     private float charSpacing = Spacing.NO_CHAR_SPACE;
-    ;
 
     public CustomTextView(Context context) {
         super(context);
@@ -105,7 +104,7 @@ public class CustomTextView extends AppCompatTextView {
      *
      * @since 1.0
      */
-    public int getBtnTxtColor() {
+    private int getBtnTxtColor() {
         return btnTxtColor;
     }
 

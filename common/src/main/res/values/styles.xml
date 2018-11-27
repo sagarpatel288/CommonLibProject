@@ -37,18 +37,8 @@
     </style>
 
     <!--Single line attributes for TextView-->
-    <style name="SingleLine">
-        <item name="android:ellipsize">marquee</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:maxLines">1</item>
-    </style>
 
     <!--Scrollable attributes for TextView-->
-    <style name="Scrollable" parent="SingleLine">
-        <item name="android:marqueeRepeatLimit">marquee_forever</item>
-        <item name="android:scrollHorizontally">true</item>
-        <item name="android:freezesText">true</item>
-    </style>
 
     <!--Scrollable single line Title TextView-->
     <style name="TvTitle.Scrollable">

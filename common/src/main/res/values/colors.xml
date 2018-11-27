@@ -5,11 +5,9 @@
     <!--Color for TextView-->
     <color name="colorBlack">#000000</color>
     <!--Color for Product list item imageview border-->
-    <color name="colorBorderImage">#013ff9</color>
     <color name="colorTranslucentStatusbar">#649c7c7c</color>
     <color name="colorPrimaryDark">@color/colorAccent</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorOrange">#e57373</color>
     <color name="colorWhite">#ffffff</color>
-    <color name="colorDivider">#e0e0e0</color>
 </resources>

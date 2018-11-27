@@ -66,7 +66,14 @@ public class AddEditDetailActivity extends BaseActivity implements LoaderManager
     private Uri imageUri;
     private Uri newImageUri;
 
-    private Handler updateHandler = new Handler();
+    private String sourceProductName;
+    private int sourceQuantities;
+    private float sourceUnitPrice;
+    private float sourceTotalPrice;
+    private String sourceSupplier;
+    private String sourceSupplierPhone;
+
+    private final Handler updateHandler = new Handler();
 
     @Override
     protected int getLayoutId() {
@@ -476,12 +483,12 @@ public class AddEditDetailActivity extends BaseActivity implements LoaderManager
         // Note: 11/27/2018 by sagar  Either it is edit operation and user has not changed anything then return false
         if (contentUri != null
                 && (newImageUri == null || newImageUri.toString().isEmpty() || newImageUri == imageUri)
-                && StringUtils.getDefaultString(productName, "").equalsIgnoreCase(EditTextUtils.getString(binding.etProductName))
-                && StringUtils.getDefaultString(supplier, "").equalsIgnoreCase(EditTextUtils.getString(binding.etSupplierName))
-                && StringUtils.getDefaultString(String.valueOf(quantities), "").equalsIgnoreCase(EditTextUtils.getString(binding.includeLayoutQuantity.etQuantity))
-                && StringUtils.getDefaultString(String.valueOf(unitPrice), "").equalsIgnoreCase(EditTextUtils.getString(binding.etUnitPriceValue))
-                && StringUtils.getDefaultString(String.valueOf(totalPrice), "").equalsIgnoreCase(String.valueOf(binding.tvTotalPriceValue.getText()))
-                && StringUtils.getDefaultString(supplierPhone, "").equalsIgnoreCase(EditTextUtils.getString(binding.etSupplierPhone))) {
+                && StringUtils.getDefaultString(sourceProductName, "").equalsIgnoreCase(EditTextUtils.getString(binding.etProductName))
+                && StringUtils.getDefaultString(sourceSupplier, "").equalsIgnoreCase(EditTextUtils.getString(binding.etSupplierName))
+                && StringUtils.getDefaultString(String.valueOf(sourceQuantities), "").equalsIgnoreCase(EditTextUtils.getString(binding.includeLayoutQuantity.etQuantity))
+                && StringUtils.getDefaultString(String.valueOf(sourceUnitPrice), "").equalsIgnoreCase(EditTextUtils.getString(binding.etUnitPriceValue))
+                && StringUtils.getDefaultString(String.valueOf(sourceTotalPrice), "").equalsIgnoreCase(String.valueOf(binding.tvTotalPriceValue.getText()))
+                && StringUtils.getDefaultString(sourceSupplierPhone, "").equalsIgnoreCase(EditTextUtils.getString(binding.etSupplierPhone))) {
             return false;
             // Note: 11/27/2018 by sagar  OR if user has done nothing for insert operation then return false
             // Note: 11/27/2018 by sagar  Otherwise return true
@@ -508,13 +515,11 @@ public class AddEditDetailActivity extends BaseActivity implements LoaderManager
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.unsaved_changes_dialog_msg);
         builder.setPositiveButton(R.string.discard, discardButtonClickListener);
-        builder.setNegativeButton(R.string.keep_editing, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Keep editing" button, so dismiss the dialog
-                // and continue editing the product.
-                if (dialog != null) {
-                    dialog.dismiss();
-                }
+        builder.setNegativeButton(R.string.keep_editing, (dialog, id) -> {
+            // User clicked the "Keep editing" button, so dismiss the dialog
+            // and continue editing the product.
+            if (dialog != null) {
+                dialog.dismiss();
             }
         });
 
@@ -624,19 +629,34 @@ public class AddEditDetailActivity extends BaseActivity implements LoaderManager
         int columnSupplierPhone = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
 
         // Note: 11/25/2018 by sagar  Use column indices to retrieve values
-        productName = cursor.getString(columnProductName);
+        sourceProductName = cursor.getString(columnProductName);
         String imagePath = cursor.getString(columnImageString);
         if (StringUtils.isNotNullNotEmpty(imagePath)) {
             imageUri = Uri.parse(imagePath);
         }
-        unitPrice = cursor.getFloat(columnUnitPrice);
-        quantities = cursor.getInt(columnQuantity);
-        totalPrice = cursor.getFloat(columnTotalPrice);
-        supplier = cursor.getString(columnSupplier);
-        supplierPhone = cursor.getString(columnSupplierPhone);
+        sourceUnitPrice = cursor.getFloat(columnUnitPrice);
+        sourceQuantities = cursor.getInt(columnQuantity);
+        sourceTotalPrice = cursor.getFloat(columnTotalPrice);
+        sourceSupplier = cursor.getString(columnSupplier);
+        sourceSupplierPhone = cursor.getString(columnSupplierPhone);
 
         // Note: 11/27/2018 by sagar  Setting up retrieved data
+        copyValues();
         setData();
+    }
+
+    /**
+     * Copy source value to values that we are tracking and later will compare both values
+     * @since  1.0
+     */
+    private void copyValues() {
+        newImageUri = imageUri;
+        productName = sourceProductName;
+        unitPrice = sourceUnitPrice;
+        quantities = sourceQuantities;
+        totalPrice = sourceTotalPrice;
+        supplier = sourceSupplier;
+        supplierPhone = sourceSupplierPhone;
     }
 
     /**
@@ -647,7 +667,6 @@ public class AddEditDetailActivity extends BaseActivity implements LoaderManager
     private void setData() {
         if (imageUri != null) {
             setImage(imageUri);
-            newImageUri = imageUri;
         }
         binding.etUnitPriceValue.setText(String.valueOf(unitPrice));
         binding.includeLayoutQuantity.etQuantity.setText(String.valueOf(quantities));
@@ -669,6 +688,9 @@ public class AddEditDetailActivity extends BaseActivity implements LoaderManager
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         EditTextUtils.clearEditText(binding.etProductName, binding.etUnitPriceValue, binding.etSupplierName, binding.etSupplierPhone);
+        binding.ivProduct.setImageResource(0);
+        imageUri = null;
+        newImageUri = null;
     }
 
     @Override
@@ -878,7 +900,7 @@ public class AddEditDetailActivity extends BaseActivity implements LoaderManager
      * @since 1.0
      */
 
-    public void executeRunnableLoop() {
+    private void executeRunnableLoop() {
         updateHandler.postDelayed(new QuantityModifier(), AppConstants.DELAY);
     }
 
@@ -901,7 +923,7 @@ public class AddEditDetailActivity extends BaseActivity implements LoaderManager
 
     @Override
     public void onBackPressed() {
-        if (!hasChanges()) {
+        if (!hasChanged()) {
             super.onBackPressed();
         } else {
             // Otherwise if there are unsaved changes, setup a dialog to warn the user.
@@ -915,24 +937,6 @@ public class AddEditDetailActivity extends BaseActivity implements LoaderManager
             // Show dialog that there are unsaved changes
             showUnsavedChangesDialog(discardButtonClickListener);
         }
-    }
-
-    private boolean hasChanges() {
-        if (contentUri != null && StringUtils.isNotNullNotEmpty(productName)
-                && StringUtils.isNotNullNotEmpty(supplier)
-                && StringUtils.isNotNullNotEmpty(String.valueOf(quantities))
-                && StringUtils.isNotNullNotEmpty(String.valueOf(unitPrice))
-                && StringUtils.isNotNullNotEmpty(String.valueOf(totalPrice))
-                && StringUtils.isNotNullNotEmpty(supplierPhone)
-                && productName.equalsIgnoreCase(EditTextUtils.getString(binding.etProductName))
-                && supplier.equalsIgnoreCase(EditTextUtils.getString(binding.etSupplierName))
-                && String.valueOf(quantities).equalsIgnoreCase(EditTextUtils.getString(binding.includeLayoutQuantity.etQuantity))
-                && String.valueOf(unitPrice).equalsIgnoreCase(EditTextUtils.getString(binding.etUnitPriceValue))
-                && String.valueOf(totalPrice).equalsIgnoreCase(String.valueOf(binding.tvTotalPriceValue.getText()))
-                && supplierPhone.equalsIgnoreCase(EditTextUtils.getString(binding.etSupplierPhone))
-                ) {
-            return false;
-        } else return contentUri != null;
     }
 
     /*

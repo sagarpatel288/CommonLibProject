@@ -21,8 +21,10 @@ import com.library.android.common.utils.ViewUtils;
 
 import androidx.databinding.DataBindingUtil;
 
+import static android.util.Log.d;
 import static com.example.android.inventoryapp.appconstants.AppConstants.MAX_QTY;
 import static com.example.android.inventoryapp.appconstants.AppConstants.MIN_QTY;
+import static com.library.android.common.appconstants.AppConstants.TAG;
 
 
 /**
@@ -34,15 +36,13 @@ import static com.example.android.inventoryapp.appconstants.AppConstants.MIN_QTY
  */
 public class IproductCursorAdapter extends CursorAdapter {
 
-    private Context context;
     private Callbacks.OnChangeQuantity onChangeQuantity;
     private Handler updateHandler = new Handler();
     private boolean autoIncrement;
     private boolean autoDecrement;
-    private int quantities;
-    private long itemId;
-    private float unitPrice;
-    private float totalPrice;
+    private int columnRowId;
+    private int columnUnitPrice;
+    private int columnQuantity;
 
     /**
      * Constructs a new {@link IproductCursorAdapter}.
@@ -52,7 +52,6 @@ public class IproductCursorAdapter extends CursorAdapter {
      */
     public IproductCursorAdapter(Context context, Cursor c) {
         super(context, c, 0 /* flags */);
-        this.context = context;
         this.onChangeQuantity = (Callbacks.OnChangeQuantity) context;
     }
 
@@ -105,12 +104,12 @@ public class IproductCursorAdapter extends CursorAdapter {
         int columnSupplierPhone = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
 
         // Note: 11/25/2018 by sagar  Use column indices to retrieve values
-        itemId = cursor.getLong(columnRowId);
+        long itemId = cursor.getLong(columnRowId);
         String productName = cursor.getString(columnProductName);
         String imagePath = cursor.getString(columnImageUri);
-        unitPrice = cursor.getFloat(columnUnitPrice);
-        quantities = cursor.getInt(columnQuantity);
-        totalPrice = cursor.getFloat(columnTotalPrice);
+        float unitPrice = cursor.getFloat(columnUnitPrice);
+        int quantities = cursor.getInt(columnQuantity);
+        float totalPrice = cursor.getFloat(columnTotalPrice);
         String supplier = cursor.getString(columnSupplier);
         String supplierPhone = cursor.getString(columnSupplierPhone);
 
@@ -130,7 +129,8 @@ public class IproductCursorAdapter extends CursorAdapter {
         // Note: 11/28/2018 by sagar  Click listener for tv btn add
         binding.includeLayoutQuantity.tvBtnPlus.setOnClickListener(v -> {
             if (quantities <= MAX_QTY) {
-                increaseQuantity();
+                d(TAG, "IproductCursorAdapter: bindView: OnClick Plus: " + " :itemId: " + itemId + " :quantities: " + quantities);
+                increaseQuantity(itemId, quantities, unitPrice, totalPrice);
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.msg_maximum_quantity_reached), Toast.LENGTH_SHORT).show();
             }
@@ -139,7 +139,7 @@ public class IproductCursorAdapter extends CursorAdapter {
         // Note: 11/28/2018 by sagar  Click listener for tv btn minus
         binding.includeLayoutQuantity.tvBtnMinus.setOnClickListener(v -> {
             if (quantities > MIN_QTY) {
-                decreaseQuantity();
+                decreaseQuantity(itemId, quantities, unitPrice, totalPrice);
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.msg_quantity_cannot_be_less_than_one), Toast.LENGTH_SHORT).show();
             }
@@ -152,9 +152,10 @@ public class IproductCursorAdapter extends CursorAdapter {
             if (quantities <= MAX_QTY) {
                 //Identifies that the user has just touched the btn_increment
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    d(TAG, "IproductCursorAdapter: bindView: performClick");
                     finalBinding.includeLayoutQuantity.tvBtnPlus.performClick();
                     autoIncrement = true;
-                    updateHandler.postDelayed(new QuantityModifier(), AppConstants.DELAY);
+                    updateHandler.postDelayed(new QuantityModifier(itemId, unitPrice, quantities), AppConstants.DELAY);
                 } else {
                     autoIncrement = false;
                     finalBinding.includeLayoutQuantity.tvBtnPlus.setPressed(false);
@@ -165,42 +166,42 @@ public class IproductCursorAdapter extends CursorAdapter {
 
         // Note: 11/28/2018 by sagar  Set touch listener for continuous events
         ItemProductListBinding finalBinding1 = binding;
-        binding.includeLayoutQuantity.tvBtnMinus.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                //We do not want to continue if the quantity has reached to minimum limit.
-                if (quantities > MIN_QTY) {
-                    //Identifies that the user has just touched the btn_decrement
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        finalBinding1.includeLayoutQuantity.tvBtnMinus.performClick();
-                        autoDecrement = true;
-                        updateHandler.postDelayed(new QuantityModifier(), AppConstants.DELAY);
-                    } else {
-                        autoDecrement = false;
-                        finalBinding1.includeLayoutQuantity.tvBtnMinus.setPressed(false);
-                    }
+        binding.includeLayoutQuantity.tvBtnMinus.setOnTouchListener((v, event) -> {
+            //We do not want to continue if the quantity has reached to minimum limit.
+            if (quantities > MIN_QTY) {
+                //Identifies that the user has just touched the btn_decrement
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    finalBinding1.includeLayoutQuantity.tvBtnMinus.performClick();
+                    autoDecrement = true;
+                    updateHandler.postDelayed(new QuantityModifier(itemId, unitPrice, quantities), AppConstants.DELAY);
+                } else {
+                    autoDecrement = false;
+                    finalBinding1.includeLayoutQuantity.tvBtnMinus.setPressed(false);
                 }
-                return true;
             }
+            return true;
         });
     }
 
     /**
      * Increase quantities
-     * @since  1.0
+     *
+     * @since 1.0
      */
-    private void increaseQuantity() {
+    private void increaseQuantity(long itemId, int quantities, float unitPrice, float totalPrice) {
         quantities++;
         if (onChangeQuantity != null) {
+            d(TAG, "IproductCursorAdapter: increaseQuantity: itemId: " + itemId + " :quantities: " + quantities);
             onChangeQuantity.onChangeQuantity(itemId, quantities, unitPrice, totalPrice);
         }
     }
 
     /**
      * Decrease quantities
-     * @since  1.0
+     *
+     * @since 1.0
      */
-    private void decreaseQuantity() {
+    private void decreaseQuantity(long itemId, int quantities, float unitPrice, float totalPrice) {
         quantities--;
         if (onChangeQuantity != null) {
             onChangeQuantity.onChangeQuantity(itemId, quantities, unitPrice, totalPrice);
@@ -211,30 +212,56 @@ public class IproductCursorAdapter extends CursorAdapter {
      * Causes the Runnable (QuantityModifier) to be added to the message queue, to be run after the specified amount of time elapses.
      * The runnable will be run on the thread to which this handler is attached.
      *
+     * @param isIncrement
+     * @param itemId      rowItem id of selected product
+     * @param quantities  quantities of selected product
+     * @param unitPrice   unit price of selected product
+     * @param totalPrice  total price of selected product
      * @see QuantityModifier for the usage
      * @since 1.0
      */
-    private void executeRunnableLoop() {
-        updateHandler.postDelayed(new QuantityModifier(), AppConstants.DELAY);
+    private void executeRunnableLoop(boolean isIncrement, long itemId, int quantities, float unitPrice, float totalPrice) {
+        d(TAG, "IproductCursorAdapter: executeRunnableLoop: " + " :itemId: " + itemId + " :quantities: " + quantities);
+        if (isIncrement) {
+            quantities++;
+        } else {
+            quantities--;
+        }
+        updateHandler.postDelayed(new QuantityModifier(itemId, unitPrice, quantities), AppConstants.DELAY);
     }
 
     /*
      * Dedicated thread to update ui
      */
-    public class QuantityModifier implements Runnable {
+    private class QuantityModifier implements Runnable {
+
+        private long itemId;
+        private float unitPrice;
+        private int quantities;
+        private float totalPrice;
+
+        QuantityModifier(long itemId, float unitPrice, int quantities) {
+            d(TAG, "IproductCursorAdapter: QuantityModifier: QuantityModifier: " + " :itemId: " + itemId + " :quantities: " + quantities);
+            this.itemId = itemId;
+            this.unitPrice = unitPrice;
+            this.quantities = quantities;
+            totalPrice = quantities * unitPrice;
+        }
+
         @Override
         public void run() {
             if (autoIncrement) {
                 //We do not want to continue the loop if the quantity has reached to maximum limit.
                 if (quantities <= MAX_QTY) {
-                    increaseQuantity();
-                    executeRunnableLoop();
+                    d(TAG, "QuantityModifier: run: itemId: " + itemId + " :quantities: " + quantities);
+                    increaseQuantity(itemId, quantities, unitPrice, totalPrice);
+                    executeRunnableLoop(true, itemId, quantities, unitPrice, totalPrice);
                 }
             } else if (autoDecrement) {
                 //We do not want to continue the loop if the quantity has reached to minimum limit.
                 if (quantities > MIN_QTY) {
-                    decreaseQuantity();
-                    executeRunnableLoop();
+                    decreaseQuantity(itemId, quantities, unitPrice, totalPrice);
+                    executeRunnableLoop(false, itemId, quantities, unitPrice, totalPrice);
                 }
             }
         }
