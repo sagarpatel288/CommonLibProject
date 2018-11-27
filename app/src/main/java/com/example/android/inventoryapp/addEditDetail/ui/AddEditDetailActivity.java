@@ -475,7 +475,6 @@ public class AddEditDetailActivity extends BaseActivity implements LoaderManager
         // Note: 11/27/2018 by sagar  Consider default values of unit price and quantity for fresh add/insert operation
         // Note: 11/27/2018 by sagar  Either it is edit operation and user has not changed anything then return false
         if (contentUri != null
-                && imageUri != null
                 && (newImageUri == null || newImageUri.toString().isEmpty() || newImageUri == imageUri)
                 && StringUtils.getDefaultString(productName, "").equalsIgnoreCase(EditTextUtils.getString(binding.etProductName))
                 && StringUtils.getDefaultString(supplier, "").equalsIgnoreCase(EditTextUtils.getString(binding.etSupplierName))

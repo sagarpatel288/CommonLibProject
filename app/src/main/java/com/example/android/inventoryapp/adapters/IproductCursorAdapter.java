@@ -3,7 +3,9 @@ package com.example.android.inventoryapp.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Handler;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
@@ -13,6 +15,7 @@ import com.example.android.inventoryapp.R;
 import com.example.android.inventoryapp.data.InventoryContract;
 import com.example.android.inventoryapp.databinding.ItemProductListBinding;
 import com.example.android.inventoryapp.listeners.Callbacks;
+import com.library.android.common.appconstants.AppConstants;
 import com.library.android.common.utils.StringUtils;
 import com.library.android.common.utils.ViewUtils;
 
@@ -33,6 +36,13 @@ public class IproductCursorAdapter extends CursorAdapter {
 
     private Context context;
     private Callbacks.OnChangeQuantity onChangeQuantity;
+    private Handler updateHandler = new Handler();
+    private boolean autoIncrement;
+    private boolean autoDecrement;
+    private int quantities;
+    private long itemId;
+    private float unitPrice;
+    private float totalPrice;
 
     /**
      * Constructs a new {@link IproductCursorAdapter}.
@@ -95,12 +105,12 @@ public class IproductCursorAdapter extends CursorAdapter {
         int columnSupplierPhone = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
 
         // Note: 11/25/2018 by sagar  Use column indices to retrieve values
-        long itemId = cursor.getLong(columnRowId);
+        itemId = cursor.getLong(columnRowId);
         String productName = cursor.getString(columnProductName);
         String imagePath = cursor.getString(columnImageUri);
-        float unitPrice = cursor.getFloat(columnUnitPrice);
-        final int[] quantities = {cursor.getInt(columnQuantity)};
-        float totalPrice = cursor.getFloat(columnTotalPrice);
+        unitPrice = cursor.getFloat(columnUnitPrice);
+        quantities = cursor.getInt(columnQuantity);
+        totalPrice = cursor.getFloat(columnTotalPrice);
         String supplier = cursor.getString(columnSupplier);
         String supplierPhone = cursor.getString(columnSupplierPhone);
 
@@ -114,15 +124,13 @@ public class IproductCursorAdapter extends CursorAdapter {
             ViewUtils.loadImage(context, Uri.parse(imagePath), R.drawable.bg_circle_ring, R.drawable.bg_circle_ring, binding.civ);
         }
         binding.tvPrice.setText(String.format("%s: %s", context.getString(R.string.label_total_inr), String.valueOf(totalPrice)));
-        binding.includeLayoutQuantity.tvQuantity.setText(String.valueOf(quantities[0]));
+        binding.includeLayoutQuantity.tvQuantity.setText(String.valueOf(quantities));
+
 
         // Note: 11/28/2018 by sagar  Click listener for tv btn add
         binding.includeLayoutQuantity.tvBtnPlus.setOnClickListener(v -> {
-            if (quantities[0] <= MAX_QTY) {
-                quantities[0]++;
-                if (onChangeQuantity != null) {
-                    onChangeQuantity.onChangeQuantity(itemId, quantities[0], unitPrice, totalPrice);
-                }
+            if (quantities <= MAX_QTY) {
+                increaseQuantity();
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.msg_maximum_quantity_reached), Toast.LENGTH_SHORT).show();
             }
@@ -130,14 +138,106 @@ public class IproductCursorAdapter extends CursorAdapter {
 
         // Note: 11/28/2018 by sagar  Click listener for tv btn minus
         binding.includeLayoutQuantity.tvBtnMinus.setOnClickListener(v -> {
-            if (quantities[0] > MIN_QTY) {
-                quantities[0]--;
-                if (onChangeQuantity != null) {
-                    onChangeQuantity.onChangeQuantity(itemId, quantities[0], unitPrice, totalPrice);
-                }
+            if (quantities > MIN_QTY) {
+                decreaseQuantity();
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.msg_quantity_cannot_be_less_than_one), Toast.LENGTH_SHORT).show();
             }
         });
+
+        // Note: 11/28/2018 by sagar  Set touch listener for continuous events
+        ItemProductListBinding finalBinding = binding;
+        binding.includeLayoutQuantity.tvBtnPlus.setOnTouchListener((v, event) -> {
+            //We do not want to continue if the quantity has reached to maximum limit.
+            if (quantities <= MAX_QTY) {
+                //Identifies that the user has just touched the btn_increment
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    finalBinding.includeLayoutQuantity.tvBtnPlus.performClick();
+                    autoIncrement = true;
+                    updateHandler.postDelayed(new QuantityModifier(), AppConstants.DELAY);
+                } else {
+                    autoIncrement = false;
+                    finalBinding.includeLayoutQuantity.tvBtnPlus.setPressed(false);
+                }
+            }
+            return true;
+        });
+
+        // Note: 11/28/2018 by sagar  Set touch listener for continuous events
+        ItemProductListBinding finalBinding1 = binding;
+        binding.includeLayoutQuantity.tvBtnMinus.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                //We do not want to continue if the quantity has reached to minimum limit.
+                if (quantities > MIN_QTY) {
+                    //Identifies that the user has just touched the btn_decrement
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        finalBinding1.includeLayoutQuantity.tvBtnMinus.performClick();
+                        autoDecrement = true;
+                        updateHandler.postDelayed(new QuantityModifier(), AppConstants.DELAY);
+                    } else {
+                        autoDecrement = false;
+                        finalBinding1.includeLayoutQuantity.tvBtnMinus.setPressed(false);
+                    }
+                }
+                return true;
+            }
+        });
     }
+
+    /**
+     * Increase quantities
+     * @since  1.0
+     */
+    private void increaseQuantity() {
+        quantities++;
+        if (onChangeQuantity != null) {
+            onChangeQuantity.onChangeQuantity(itemId, quantities, unitPrice, totalPrice);
+        }
+    }
+
+    /**
+     * Decrease quantities
+     * @since  1.0
+     */
+    private void decreaseQuantity() {
+        quantities--;
+        if (onChangeQuantity != null) {
+            onChangeQuantity.onChangeQuantity(itemId, quantities, unitPrice, totalPrice);
+        }
+    }
+
+    /**
+     * Causes the Runnable (QuantityModifier) to be added to the message queue, to be run after the specified amount of time elapses.
+     * The runnable will be run on the thread to which this handler is attached.
+     *
+     * @see QuantityModifier for the usage
+     * @since 1.0
+     */
+    private void executeRunnableLoop() {
+        updateHandler.postDelayed(new QuantityModifier(), AppConstants.DELAY);
+    }
+
+    /*
+     * Dedicated thread to update ui
+     */
+    public class QuantityModifier implements Runnable {
+        @Override
+        public void run() {
+            if (autoIncrement) {
+                //We do not want to continue the loop if the quantity has reached to maximum limit.
+                if (quantities <= MAX_QTY) {
+                    increaseQuantity();
+                    executeRunnableLoop();
+                }
+            } else if (autoDecrement) {
+                //We do not want to continue the loop if the quantity has reached to minimum limit.
+                if (quantities > MIN_QTY) {
+                    decreaseQuantity();
+                    executeRunnableLoop();
+                }
+            }
+        }
+    }
+
 }

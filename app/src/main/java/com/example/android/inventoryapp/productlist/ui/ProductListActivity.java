@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 
 import com.example.android.inventoryapp.R;
 import com.example.android.inventoryapp.adapters.IproductCursorAdapter;
@@ -74,13 +73,10 @@ public class ProductListActivity extends BaseActivity implements
     }
 
     private void setListView() {
-        binding.listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(ProductListActivity.this, AddEditDetailActivity.class);
-                intent.setData(ContentUris.withAppendedId(CONTENT_URI, id));
-                startActivity(intent);
-            }
+        binding.listView.setOnItemClickListener((parent, view, position, id) -> {
+            Intent intent = new Intent(ProductListActivity.this, AddEditDetailActivity.class);
+            intent.setData(ContentUris.withAppendedId(CONTENT_URI, id));
+            startActivity(intent);
         });
         binding.tvNoDataMsg.setText(getString(R.string.label_tap_floating_bottom_button_to_add_dummy_data));
         binding.listView.setEmptyView(binding.tvNoDataMsg);
