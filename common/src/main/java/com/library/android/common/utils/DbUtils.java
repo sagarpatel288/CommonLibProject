@@ -12,6 +12,7 @@ import static android.util.Log.d;
 public class DbUtils implements BaseColumns {
 
     public static final String COLUMN_TYPE_TEXT = "TEXT NOT NULL";
+    public static final String COLUMN_TYPE_TEXT_NULLABLE = "TEXT";
     public static final String COLUMN_TYPE_INTEGER = "INTEGER NOT NULL DEFAULT 0";
     public static final String COLUMN_TYPE_REAL = "REAL NOT NULL DEFAULT 0";
 

@@ -4,8 +4,15 @@
     <!--View space-->
     <dimen name="view_space_zero">0dp</dimen>
     <dimen name="view_space_8">8dp</dimen>
+    <!--View space align to right menu icon of toolbar-->
+    <dimen name="view_space_10">10dp</dimen>
     <dimen name="view_space_12">12dp</dimen>
+    <dimen name="view_space_16">16dp</dimen>
     <dimen name="view_space_18">18dp</dimen>
+    <dimen name="view_space_20">20dp</dimen>
+    <!--View space align to left home up arrow-->
+    <dimen name="view_space_22">22dp</dimen>
+    <dimen name="view_space_28">28dp</dimen>
 
     <!--Image size for product list item-->
     <!--Image width for product list item-->
@@ -31,4 +38,7 @@
     <dimen name="height_image_detail">180dp</dimen>
     <!--Size of chip for quantity plus and minus-->
     <dimen name="size_chip_quantity">30dp</dimen>
+
+    <!--Minimum width of quantity picker in add edit detail screen-->
+    <dimen name="width_quantity">190dp</dimen>
 </resources>

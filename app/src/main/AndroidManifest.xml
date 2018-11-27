@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.example.android.inventoryapp">
 
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
         android:name=".base.MyApplication"
         android:allowBackup="true"
@@ -11,19 +15,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".catalog.ui.ProductListActivity">
+        <activity android:name=".productlist.ui.ProductListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".addEditDetail.ui.AddEditDetailActivity">
+        <activity
+            android:name=".addEditDetail.ui.AddEditDetailActivity"
+            android:parentActivityName=".productlist.ui.ProductListActivity">
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".productlist.ui.ProductListActivity"/>
         </activity>
+
         <provider
             android:name=".data.IproductProvider"
             android:authorities="com.example.android.inventoryapp"
-            android:exported="false" />
+            android:exported="false"/>
     </application>
 
 </manifest>

@@ -32,8 +32,9 @@ public class DbHelper extends SQLiteOpenHelper {
      *
      * @since 1.0
      */
-    // Note: 11/27/2018 by sagar  Added column: unit price
-    private static final int DATABASE_VERSION = 2;
+    // Note: 11/27/2018 by sagar  v2 change: Added column: unit price
+    // Note: 11/27/2018 by sagar  v3 change: Added column: image string (uri) path
+    private static final int DATABASE_VERSION = 3;
 
 
     /**
@@ -59,6 +60,7 @@ public class DbHelper extends SQLiteOpenHelper {
     private List<Column> getInventoryColumns() {
         List<Column> columnList = new ArrayList<>();
         columnList.add(new Column(ProductEntry.COLUMN_PRODUCT_NAME, DbUtils.COLUMN_TYPE_TEXT));
+        columnList.add(new Column(ProductEntry.COLUMN_PRODUCT_IMAGE, DbUtils.COLUMN_TYPE_TEXT_NULLABLE));
         columnList.add(new Column(ProductEntry.COLUMN_UNIT_PRICE, DbUtils.COLUMN_TYPE_REAL));
         columnList.add(new Column(ProductEntry.COLUMN_SUPPLIER_NAME, DbUtils.COLUMN_TYPE_TEXT));
         columnList.add(new Column(ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER, DbUtils.COLUMN_TYPE_TEXT));

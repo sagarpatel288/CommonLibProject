@@ -82,6 +82,7 @@ public final class InventoryContract {
          * @since 1.0
          */
         public static final String COLUMN_PRODUCT_NAME = "Product_Name";
+        public static final String COLUMN_PRODUCT_IMAGE = "Product_Image";
         public static final String COLUMN_UNIT_PRICE = "Unit_Price_in_INR";
         public static final String COLUMN_TOTAL_PRICE = "Price_in_INR";
         public static final String COLUMN_QUANTITY = "Quantity";

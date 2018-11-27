@@ -1,15 +1,15 @@
 package com.library.android.common.utils;
 
-final class StringUtils {
+public final class StringUtils {
 
     private StringUtils() {
     }
 
-    private static boolean isNotNullNotEmpty(String s) {
+    public static boolean isNotNullNotEmpty(String s) {
         return s != null && !s.isEmpty();
     }
 
-    static String getDefaultString(String value, String defaultString) {
+    public static String getDefaultString(String value, String defaultString) {
         if (isNotNullNotEmpty(value)) {
             return value;
         } else {

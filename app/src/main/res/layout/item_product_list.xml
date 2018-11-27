@@ -59,25 +59,7 @@
             android:paddingStart="@dimen/view_space_8"
             android:paddingEnd="@dimen/view_space_8"
             android:paddingRight="@dimen/view_space_8"
-            app:layout_constraintStart_toEndOf="@+id/civ"
-            app:layout_constraintLeft_toRightOf="@+id/civ"
-            app:layout_constraintTop_toTopOf="@id/civ"
-            app:layout_constraintBottom_toBottomOf="@id/civ"
-            app:layout_constraintEnd_toStartOf="@+id/layout_quantity"
-            app:layout_constraintRight_toLeftOf="@+id/layout_quantity"
-            app:layout_constraintHorizontal_bias="0"
-            />
-
-        <TextView
-            android:id="@+id/tv_available"
-            style="@style/TvSubtitle.Scrollable"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            tools:text="@string/placeholder"
-            android:paddingLeft="@dimen/view_space_8"
-            android:paddingStart="@dimen/view_space_8"
-            android:paddingEnd="@dimen/view_space_8"
-            android:paddingRight="@dimen/view_space_8"
+            android:paddingBottom="@dimen/view_space_8"
             app:layout_constraintStart_toEndOf="@+id/civ"
             app:layout_constraintLeft_toRightOf="@+id/civ"
             app:layout_constraintBottom_toBottomOf="@id/civ"
@@ -99,7 +81,7 @@
 
             <include
                 android:id="@+id/include_layout_quantity"
-                layout="@layout/layout_quantity"/>
+                layout="@layout/item_layout_quantity"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
