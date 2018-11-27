@@ -44,20 +44,24 @@ dependencies { configurations ->
 
 void androidSupportLibs(configurations) {
     //Native Android libraries
-    configurations.implementation "com.android.support:appcompat-v7:$rootProject.ext.supportLibraryVersion"
-    configurations.implementation "com.android.support:support-v4:$rootProject.ext.supportLibraryVersion"
-    configurations.implementation "com.android.support:design:$rootProject.ext.supportLibraryVersion"
-    configurations.implementation "com.android.support:cardview-v7:$rootProject.ext.supportLibraryVersion"
-    configurations.implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    configurations.api "com.android.support:appcompat-v7:$rootProject.ext.supportLibraryVersion"
+    configurations.api "com.android.support:support-v4:$rootProject.ext.supportLibraryVersion"
+    configurations.api "com.android.support:design:$rootProject.ext.supportLibraryVersion"
+    configurations.api "com.android.support:cardview-v7:$rootProject.ext.supportLibraryVersion"
+    configurations.api 'com.android.support.constraint:constraint-layout:1.1.2'
+    configurations.api "com.google.android.material:material:1.0.0"
 }
 
 void androidLifeCycleComponents(configurations){
     //Android architecture life cycle components
-    configurations.implementation "android.arch.lifecycle:extensions:$rootProject.ext.lifeCycle"
+    configurations.api "android.arch.lifecycle:extensions:$rootProject.ext.lifeCycle"
     configurations.annotationProcessor "android.arch.lifecycle:compiler:$rootProject.ext.lifeCycle"
 }
 
 void utils(configurations) {
+    /*api instead of implementation because we are using common library between common module and app module*/
+    /*https://stackoverflow.com/questions/44493378/whats-the-difference-between-implementation-and-compile-in-gradle*/
+
     //Butter knife for view binding
 //    configurations.implementation "com.jakewharton:butterknife:$rootProject.ext.butterKnifeVersion"
 //    configurations.annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.ext.butterKnifeVersion"
@@ -66,11 +70,15 @@ void utils(configurations) {
 
     configurations.api "com.github.bumptech.glide:glide:$rootProject.ext.glide"
     configurations.annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.ext.glide"
-    /*api instead of implementation because we are using common library between common module and app module*/
-    /*https://stackoverflow.com/questions/44493378/whats-the-difference-between-implementation-and-compile-in-gradle*/
+
+    //Runtime permission management
     configurations.api "gun0912.ted:tedpermission:$rootProject.ext.tedPermission"
     //shape of view: Get custom shape of view
     configurations.api "com.github.florent37:shapeofview:$rootProject.ext.shapeOfView"
+    //Get circular image view with custom border support
+    configurations.api "com.mikhaellopez:circularimageview:3.2.0"
+    //Get image picker and cropper
+    configurations.api "com.theartofdev.edmodo:android-image-cropper:2.8.0"
 }
 
 void testDependencies(configurations) {

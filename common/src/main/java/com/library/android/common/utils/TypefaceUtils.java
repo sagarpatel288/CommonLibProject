@@ -3,7 +3,7 @@ package com.library.android.common.utils;
 import android.content.Context;
 import android.graphics.Typeface;
 
-import com.library.android.common.appconstants.AppConstantStrings;
+import com.library.android.common.appconstants.AppConstants;
 
 
 /**
@@ -50,7 +50,7 @@ public final class TypefaceUtils {
     private TypefaceUtils() {
         //Prevent from the reflection
         if (mTypefaceUtils != null) {
-            throw new RuntimeException(AppConstantStrings.STR_MSG_ERROR_TYPEFACE_REFLECTION);
+            throw new RuntimeException(AppConstants.STR_MSG_ERROR_TYPEFACE_REFLECTION);
         }
     }
 

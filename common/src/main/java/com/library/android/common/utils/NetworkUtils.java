@@ -11,7 +11,7 @@ import com.library.android.common.listeners.Callbacks;
 /*final class because we don't want this class to be extended by any other class*/
 public final class NetworkUtils extends BroadcastReceiver {
 
-    private Callbacks.NetworkConnectionListener mNetworkConnectionListener;
+    private final Callbacks.NetworkConnectionListener mNetworkConnectionListener;
 
     /*Public constructor because for each activity to register this broadcast*/
     public NetworkUtils(Callbacks.NetworkConnectionListener mNetworkConnectionListener) {

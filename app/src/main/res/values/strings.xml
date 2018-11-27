@@ -1,3 +1,21 @@
 <resources>
-    <string name="app_name">LibProject</string>
+    <string name="app_name">InventoryApp_1</string>
+    <string name="msg_data_has_been_saved">Data has been saved</string>
+    <string name="error_msg_something_went_wrong_while_saving_data">Something went wrong while saving data</string>
+    <string name="label_tap_floating_bottom_button_to_add_dummy_data">Tap floating action button at bottom right corner to add dummy data</string>
+    <string name="label_total_rows">Total rows</string>
+    <string name="label_add_data">add Data</string>
+    <string name="icon_plus">+</string>
+    <string name="icon_minus">-</string>
+    <string name="label_order">order</string>
+    <string name="cd_edit_image">edit image</string>
+    <string name="cd_product_image">product image</string>
+    <string name="label_not_available">Not Available</string>
+    <string name="label_product_name">Product Name</string>
+    <string name="label_unit_price">Unit Price</string>
+    <string name="label_quantity">Quantity</string>
+    <string name="label_total_price">Total Price</string>
+    <string name="label_inr">INR</string>
+    <string name="label_supplier_name">Supplier Name</string>
+    <string name="label_supplier_phone_number">Supplier Phone Number</string>
 </resources>
