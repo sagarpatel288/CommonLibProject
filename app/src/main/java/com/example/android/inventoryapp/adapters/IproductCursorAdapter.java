@@ -179,6 +179,8 @@ public class IproductCursorAdapter extends CursorAdapter {
                     autoDecrement = false;
                     finalBinding1.includeLayoutQuantity.tvBtnMinus.setPressed(false);
                 }
+            } else {
+                Toast.makeText(context, context.getResources().getString(R.string.msg_quantity_cannot_be_less_than_one), Toast.LENGTH_SHORT).show();
             }
             return true;
         });
@@ -288,12 +290,16 @@ public class IproductCursorAdapter extends CursorAdapter {
                     d(TAG, "QuantityModifier: run: itemId: " + itemId + " :quantities: " + quantities);
                     increaseQuantity(itemId, quantities, unitPrice, totalPrice);
                     executeRunnableLoop(true, context, itemId, quantities, unitPrice, totalPrice);
+                } else {
+                    Toast.makeText(context, context.getResources().getString(R.string.msg_maximum_quantity_reached), Toast.LENGTH_SHORT).show();
                 }
             } else if (autoDecrement) {
                 //We do not want to continue the loop if the quantity has reached to minimum limit.
                 if (quantities > MIN_QTY) {
                     decreaseQuantity(itemId, quantities, unitPrice, totalPrice);
                     executeRunnableLoop(false, context, itemId, quantities, unitPrice, totalPrice);
+                } else {
+                    Toast.makeText(context, context.getResources().getString(R.string.msg_quantity_cannot_be_less_than_one), Toast.LENGTH_SHORT).show();
                 }
             }
         }
