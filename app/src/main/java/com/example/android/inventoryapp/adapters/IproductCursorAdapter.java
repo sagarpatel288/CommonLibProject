@@ -155,7 +155,7 @@ public class IproductCursorAdapter extends CursorAdapter {
                     d(TAG, "IproductCursorAdapter: bindView: performClick");
                     finalBinding.includeLayoutQuantity.tvBtnPlus.performClick();
                     autoIncrement = true;
-                    updateHandler.postDelayed(new QuantityModifier(itemId, unitPrice, quantities), AppConstants.DELAY);
+                    updateHandler.postDelayed(new QuantityModifier(context, itemId, unitPrice, quantities), AppConstants.DELAY);
                 } else {
                     autoIncrement = false;
                     autoDecrement = false;
@@ -174,7 +174,7 @@ public class IproductCursorAdapter extends CursorAdapter {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     finalBinding1.includeLayoutQuantity.tvBtnMinus.performClick();
                     autoDecrement = true;
-                    updateHandler.postDelayed(new QuantityModifier(itemId, unitPrice, quantities), AppConstants.DELAY);
+                    updateHandler.postDelayed(new QuantityModifier(context, itemId, unitPrice, quantities), AppConstants.DELAY);
                 } else {
                     autoDecrement = false;
                     finalBinding1.includeLayoutQuantity.tvBtnMinus.setPressed(false);
@@ -224,6 +224,7 @@ public class IproductCursorAdapter extends CursorAdapter {
      * The runnable will be run on the thread to which this handler is attached.
      *
      * @param isIncrement
+     * @param context
      * @param itemId      rowItem id of selected product
      * @param quantities  quantities of selected product
      * @param unitPrice   unit price of selected product
@@ -231,7 +232,7 @@ public class IproductCursorAdapter extends CursorAdapter {
      * @see QuantityModifier for the usage
      * @since 1.0
      */
-    private void executeRunnableLoop(boolean isIncrement, long itemId, int quantities, float unitPrice, float totalPrice) {
+    private void executeRunnableLoop(boolean isIncrement, Context context, long itemId, int quantities, float unitPrice, float totalPrice) {
         d(TAG, "IproductCursorAdapter: executeRunnableLoop: " + " :itemId: " + itemId + " :quantities: " + quantities);
         if (isIncrement) {
             if (quantities < MAX_QTY) {
@@ -248,7 +249,7 @@ public class IproductCursorAdapter extends CursorAdapter {
                 autoIncrement = true;
             }
         }
-        updateHandler.postDelayed(new QuantityModifier(itemId, unitPrice, quantities), AppConstants.DELAY);
+        updateHandler.postDelayed(new QuantityModifier(context, itemId, unitPrice, quantities), AppConstants.DELAY);
     }
 
     private boolean isMaxQuantity(int quantities) {
@@ -264,13 +265,15 @@ public class IproductCursorAdapter extends CursorAdapter {
      */
     private class QuantityModifier implements Runnable {
 
+        private Context context;
         private long itemId;
         private float unitPrice;
         private int quantities;
         private float totalPrice;
 
-        QuantityModifier(long itemId, float unitPrice, int quantities) {
+        QuantityModifier(Context context, long itemId, float unitPrice, int quantities) {
             d(TAG, "IproductCursorAdapter: QuantityModifier: QuantityModifier: " + " :itemId: " + itemId + " :quantities: " + quantities);
+            this.context = context;
             this.itemId = itemId;
             this.unitPrice = unitPrice;
             this.quantities = quantities;
@@ -284,13 +287,13 @@ public class IproductCursorAdapter extends CursorAdapter {
                 if (quantities < MAX_QTY) {
                     d(TAG, "QuantityModifier: run: itemId: " + itemId + " :quantities: " + quantities);
                     increaseQuantity(itemId, quantities, unitPrice, totalPrice);
-                    executeRunnableLoop(true, itemId, quantities, unitPrice, totalPrice);
+                    executeRunnableLoop(true, context, itemId, quantities, unitPrice, totalPrice);
                 }
             } else if (autoDecrement) {
                 //We do not want to continue the loop if the quantity has reached to minimum limit.
                 if (quantities > MIN_QTY) {
                     decreaseQuantity(itemId, quantities, unitPrice, totalPrice);
-                    executeRunnableLoop(false, itemId, quantities, unitPrice, totalPrice);
+                    executeRunnableLoop(false, context, itemId, quantities, unitPrice, totalPrice);
                 }
             }
         }
