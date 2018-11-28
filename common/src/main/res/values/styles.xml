@@ -36,10 +36,6 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <!--Single line attributes for TextView-->
-
-    <!--Scrollable attributes for TextView-->
-
     <!--Scrollable single line Title TextView-->
     <style name="TvTitle.Scrollable">
         <item name="android:ellipsize">marquee</item>
