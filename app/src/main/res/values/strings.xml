@@ -1,6 +1,6 @@
 <resources>
     <!-- App Name [CHAR LIMIT=20] -->
-    <string name="app_name">InventoryApp_1</string>
+    <string name="app_name">InventoryApp</string>
 
     <!-- Defaul empty view for product list view in case of no data [CHAR LIMIT= NONE] -->
     <string name="label_tap_floating_bottom_button_to_add_dummy_data">Tap floating action button at bottom right corner to add dummy data</string>
