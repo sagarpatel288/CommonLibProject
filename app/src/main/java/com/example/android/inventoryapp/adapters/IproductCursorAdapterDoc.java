@@ -34,7 +34,7 @@ import static com.library.android.common.appconstants.AppConstants.TAG;
  * that uses a {@link Cursor} of product data as its data source. This adapter knows
  * how to create list items for each row of product data in the {@link Cursor}.
  */
-public class IproductCursorAdapter extends CursorAdapter {
+public class IproductCursorAdapterDoc extends CursorAdapter {
 
     private Callbacks.OnChangeQuantity onChangeQuantity;
     private Handler updateHandler = new Handler();
@@ -50,7 +50,7 @@ public class IproductCursorAdapter extends CursorAdapter {
      * @param context The context
      * @param c       The cursor from which to get the data.
      */
-    public IproductCursorAdapter(Context context, Cursor c) {
+    public IproductCursorAdapterDoc(Context context, Cursor c) {
         super(context, c, 0 /* flags */);
         this.onChangeQuantity = (Callbacks.OnChangeQuantity) context;
     }
@@ -128,7 +128,7 @@ public class IproductCursorAdapter extends CursorAdapter {
 
         // Note: 11/28/2018 by sagar  Click listener for tv btn add
         binding.includeLayoutQuantity.tvBtnPlus.setOnClickListener(v -> {
-            if (quantities < MAX_QTY) {
+            if (quantities <= MAX_QTY) {
                 d(TAG, "IproductCursorAdapter: bindView: OnClick Plus: " + " :itemId: " + itemId + " :quantities: " + quantities);
                 increaseQuantity(itemId, quantities, unitPrice, totalPrice);
             } else {
@@ -158,7 +158,6 @@ public class IproductCursorAdapter extends CursorAdapter {
                     updateHandler.postDelayed(new QuantityModifier(itemId, unitPrice, quantities), AppConstants.DELAY);
                 } else {
                     autoIncrement = false;
-                    autoDecrement = false;
                     finalBinding.includeLayoutQuantity.tvBtnPlus.setPressed(false);
                 }
             }
@@ -190,15 +189,10 @@ public class IproductCursorAdapter extends CursorAdapter {
      * @since 1.0
      */
     private void increaseQuantity(long itemId, int quantities, float unitPrice, float totalPrice) {
-        if (quantities < MAX_QTY) {
-            quantities++;
-            if (onChangeQuantity != null) {
-                d(TAG, "IproductCursorAdapter: increaseQuantity: itemId: " + itemId + " :quantities: " + quantities);
-                onChangeQuantity.onChangeQuantity(itemId, quantities, unitPrice, totalPrice);
-            }
-        } else {
-            autoIncrement = false;
-            autoDecrement = true;
+        quantities++;
+        if (onChangeQuantity != null) {
+            d(TAG, "IproductCursorAdapter: increaseQuantity: itemId: " + itemId + " :quantities: " + quantities);
+            onChangeQuantity.onChangeQuantity(itemId, quantities, unitPrice, totalPrice);
         }
     }
 
@@ -208,14 +202,9 @@ public class IproductCursorAdapter extends CursorAdapter {
      * @since 1.0
      */
     private void decreaseQuantity(long itemId, int quantities, float unitPrice, float totalPrice) {
-        if (quantities > MIN_QTY) {
-            quantities--;
-            if (onChangeQuantity != null) {
-                onChangeQuantity.onChangeQuantity(itemId, quantities, unitPrice, totalPrice);
-            }
-        } else {
-            autoIncrement = true;
-            autoDecrement = false;
+        quantities--;
+        if (onChangeQuantity != null) {
+            onChangeQuantity.onChangeQuantity(itemId, quantities, unitPrice, totalPrice);
         }
     }
 
@@ -234,29 +223,11 @@ public class IproductCursorAdapter extends CursorAdapter {
     private void executeRunnableLoop(boolean isIncrement, long itemId, int quantities, float unitPrice, float totalPrice) {
         d(TAG, "IproductCursorAdapter: executeRunnableLoop: " + " :itemId: " + itemId + " :quantities: " + quantities);
         if (isIncrement) {
-            if (quantities < MAX_QTY) {
-                quantities++;
-            } else {
-                autoIncrement = false;
-                autoDecrement = true;
-            }
+            quantities++;
         } else {
-            if (quantities > MIN_QTY) {
-                quantities--;
-            } else {
-                autoDecrement = false;
-                autoIncrement = true;
-            }
+            quantities--;
         }
         updateHandler.postDelayed(new QuantityModifier(itemId, unitPrice, quantities), AppConstants.DELAY);
-    }
-
-    private boolean isMaxQuantity(int quantities) {
-        return quantities >= MAX_QTY;
-    }
-
-    private boolean isMinQuantity(int quantity) {
-        return quantity <= MIN_QTY;
     }
 
     /*
@@ -281,7 +252,7 @@ public class IproductCursorAdapter extends CursorAdapter {
         public void run() {
             if (autoIncrement) {
                 //We do not want to continue the loop if the quantity has reached to maximum limit.
-                if (quantities < MAX_QTY) {
+                if (quantities <= MAX_QTY) {
                     d(TAG, "QuantityModifier: run: itemId: " + itemId + " :quantities: " + quantities);
                     increaseQuantity(itemId, quantities, unitPrice, totalPrice);
                     executeRunnableLoop(true, itemId, quantities, unitPrice, totalPrice);
@@ -295,4 +266,5 @@ public class IproductCursorAdapter extends CursorAdapter {
             }
         }
     }
+
 }

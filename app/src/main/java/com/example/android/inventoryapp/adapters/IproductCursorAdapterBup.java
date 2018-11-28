@@ -30,11 +30,11 @@ import static com.library.android.common.appconstants.AppConstants.TAG;
 /**
  * An adapter which is responsible to inflate view for each row of product list.
  * View is provided here and data is passed by host of this adapter.
- * {@link IproductCursorAdapter} is an adapter for a list or grid view
+ * {@link IproductCursorAdapterBup} is an adapter for a list or grid view
  * that uses a {@link Cursor} of product data as its data source. This adapter knows
  * how to create list items for each row of product data in the {@link Cursor}.
  */
-public class IproductCursorAdapter extends CursorAdapter {
+public class IproductCursorAdapterBup extends CursorAdapter {
 
     private Callbacks.OnChangeQuantity onChangeQuantity;
     private Handler updateHandler = new Handler();
@@ -45,12 +45,12 @@ public class IproductCursorAdapter extends CursorAdapter {
     private int columnQuantity;
 
     /**
-     * Constructs a new {@link IproductCursorAdapter}.
+     * Constructs a new {@link IproductCursorAdapterBup}.
      *
      * @param context The context
      * @param c       The cursor from which to get the data.
      */
-    public IproductCursorAdapter(Context context, Cursor c) {
+    public IproductCursorAdapterBup(Context context, Cursor c) {
         super(context, c, 0 /* flags */);
         this.onChangeQuantity = (Callbacks.OnChangeQuantity) context;
     }
@@ -158,7 +158,6 @@ public class IproductCursorAdapter extends CursorAdapter {
                     updateHandler.postDelayed(new QuantityModifier(itemId, unitPrice, quantities), AppConstants.DELAY);
                 } else {
                     autoIncrement = false;
-                    autoDecrement = false;
                     finalBinding.includeLayoutQuantity.tvBtnPlus.setPressed(false);
                 }
             }
@@ -196,9 +195,6 @@ public class IproductCursorAdapter extends CursorAdapter {
                 d(TAG, "IproductCursorAdapter: increaseQuantity: itemId: " + itemId + " :quantities: " + quantities);
                 onChangeQuantity.onChangeQuantity(itemId, quantities, unitPrice, totalPrice);
             }
-        } else {
-            autoIncrement = false;
-            autoDecrement = true;
         }
     }
 
@@ -208,14 +204,9 @@ public class IproductCursorAdapter extends CursorAdapter {
      * @since 1.0
      */
     private void decreaseQuantity(long itemId, int quantities, float unitPrice, float totalPrice) {
-        if (quantities > MIN_QTY) {
-            quantities--;
-            if (onChangeQuantity != null) {
-                onChangeQuantity.onChangeQuantity(itemId, quantities, unitPrice, totalPrice);
-            }
-        } else {
-            autoIncrement = true;
-            autoDecrement = false;
+        quantities--;
+        if (onChangeQuantity != null) {
+            onChangeQuantity.onChangeQuantity(itemId, quantities, unitPrice, totalPrice);
         }
     }
 
@@ -236,17 +227,9 @@ public class IproductCursorAdapter extends CursorAdapter {
         if (isIncrement) {
             if (quantities < MAX_QTY) {
                 quantities++;
-            } else {
-                autoIncrement = false;
-                autoDecrement = true;
             }
         } else {
-            if (quantities > MIN_QTY) {
-                quantities--;
-            } else {
-                autoDecrement = false;
-                autoIncrement = true;
-            }
+            quantities--;
         }
         updateHandler.postDelayed(new QuantityModifier(itemId, unitPrice, quantities), AppConstants.DELAY);
     }
