@@ -21,10 +21,8 @@ import com.library.android.common.utils.ViewUtils;
 
 import androidx.databinding.DataBindingUtil;
 
-import static android.util.Log.d;
 import static com.example.android.inventoryapp.appconstants.AppConstants.MAX_QTY;
 import static com.example.android.inventoryapp.appconstants.AppConstants.MIN_QTY;
-import static com.library.android.common.appconstants.AppConstants.TAG;
 
 
 /**
@@ -40,9 +38,6 @@ public class IproductCursorAdapter extends CursorAdapter {
     private Handler updateHandler = new Handler();
     private boolean autoIncrement;
     private boolean autoDecrement;
-    private int columnRowId;
-    private int columnUnitPrice;
-    private int columnQuantity;
 
     /**
      * Constructs a new {@link IproductCursorAdapter}.
@@ -100,8 +95,6 @@ public class IproductCursorAdapter extends CursorAdapter {
         int columnUnitPrice = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_UNIT_PRICE);
         int columnQuantity = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_QUANTITY);
         int columnTotalPrice = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_TOTAL_PRICE);
-        int columnSupplier = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_SUPPLIER_NAME);
-        int columnSupplierPhone = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_SUPPLIER_PHONE_NUMBER);
 
         // Note: 11/25/2018 by sagar  Use column indices to retrieve values
         long itemId = cursor.getLong(columnRowId);
@@ -110,12 +103,6 @@ public class IproductCursorAdapter extends CursorAdapter {
         float unitPrice = cursor.getFloat(columnUnitPrice);
         int quantities = cursor.getInt(columnQuantity);
         float totalPrice = cursor.getFloat(columnTotalPrice);
-        String supplier = cursor.getString(columnSupplier);
-        String supplierPhone = cursor.getString(columnSupplierPhone);
-
-        if (supplierPhone.isEmpty()) {
-            supplierPhone = context.getResources().getString(R.string.label_not_available);
-        }
 
         // Note: 11/25/2018 by sagar  set values to view
         binding.tvName.setText(productName);
@@ -129,7 +116,6 @@ public class IproductCursorAdapter extends CursorAdapter {
         // Note: 11/28/2018 by sagar  Click listener for tv btn add
         binding.includeLayoutQuantity.tvBtnPlus.setOnClickListener(v -> {
             if (quantities < MAX_QTY) {
-                d(TAG, "IproductCursorAdapter: bindView: OnClick Plus: " + " :itemId: " + itemId + " :quantities: " + quantities);
                 increaseQuantity(itemId, quantities, unitPrice, totalPrice);
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.msg_maximum_quantity_reached), Toast.LENGTH_SHORT).show();
@@ -152,7 +138,6 @@ public class IproductCursorAdapter extends CursorAdapter {
             if (quantities <= MAX_QTY) {
                 //Identifies that the user has just touched the btn_increment
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    d(TAG, "IproductCursorAdapter: bindView: performClick");
                     finalBinding.includeLayoutQuantity.tvBtnPlus.performClick();
                     autoIncrement = true;
                     updateHandler.postDelayed(new QuantityModifier(context, itemId, unitPrice, quantities), AppConstants.DELAY);
@@ -195,7 +180,6 @@ public class IproductCursorAdapter extends CursorAdapter {
         if (quantities < MAX_QTY) {
             quantities++;
             if (onChangeQuantity != null) {
-                d(TAG, "IproductCursorAdapter: increaseQuantity: itemId: " + itemId + " :quantities: " + quantities);
                 onChangeQuantity.onChangeQuantity(itemId, quantities, unitPrice, totalPrice);
             }
         } else {
@@ -225,17 +209,15 @@ public class IproductCursorAdapter extends CursorAdapter {
      * Causes the Runnable (QuantityModifier) to be added to the message queue, to be run after the specified amount of time elapses.
      * The runnable will be run on the thread to which this handler is attached.
      *
-     * @param isIncrement
-     * @param context
+     * @param isIncrement whether to increase or decrease item
+     * @param context context to show toast message
      * @param itemId      rowItem id of selected product
      * @param quantities  quantities of selected product
      * @param unitPrice   unit price of selected product
-     * @param totalPrice  total price of selected product
      * @see QuantityModifier for the usage
      * @since 1.0
      */
-    private void executeRunnableLoop(boolean isIncrement, Context context, long itemId, int quantities, float unitPrice, float totalPrice) {
-        d(TAG, "IproductCursorAdapter: executeRunnableLoop: " + " :itemId: " + itemId + " :quantities: " + quantities);
+    private void executeRunnableLoop(boolean isIncrement, Context context, long itemId, int quantities, float unitPrice) {
         if (isIncrement) {
             if (quantities < MAX_QTY) {
                 quantities++;
@@ -254,14 +236,6 @@ public class IproductCursorAdapter extends CursorAdapter {
         updateHandler.postDelayed(new QuantityModifier(context, itemId, unitPrice, quantities), AppConstants.DELAY);
     }
 
-    private boolean isMaxQuantity(int quantities) {
-        return quantities >= MAX_QTY;
-    }
-
-    private boolean isMinQuantity(int quantity) {
-        return quantity <= MIN_QTY;
-    }
-
     /*
      * Dedicated thread to update ui
      */
@@ -274,7 +248,6 @@ public class IproductCursorAdapter extends CursorAdapter {
         private float totalPrice;
 
         QuantityModifier(Context context, long itemId, float unitPrice, int quantities) {
-            d(TAG, "IproductCursorAdapter: QuantityModifier: QuantityModifier: " + " :itemId: " + itemId + " :quantities: " + quantities);
             this.context = context;
             this.itemId = itemId;
             this.unitPrice = unitPrice;
@@ -287,9 +260,8 @@ public class IproductCursorAdapter extends CursorAdapter {
             if (autoIncrement) {
                 //We do not want to continue the loop if the quantity has reached to maximum limit.
                 if (quantities < MAX_QTY) {
-                    d(TAG, "QuantityModifier: run: itemId: " + itemId + " :quantities: " + quantities);
                     increaseQuantity(itemId, quantities, unitPrice, totalPrice);
-                    executeRunnableLoop(true, context, itemId, quantities, unitPrice, totalPrice);
+                    executeRunnableLoop(true, context, itemId, quantities, unitPrice);
                 } else {
                     Toast.makeText(context, context.getResources().getString(R.string.msg_maximum_quantity_reached), Toast.LENGTH_SHORT).show();
                 }
@@ -297,7 +269,7 @@ public class IproductCursorAdapter extends CursorAdapter {
                 //We do not want to continue the loop if the quantity has reached to minimum limit.
                 if (quantities > MIN_QTY) {
                     decreaseQuantity(itemId, quantities, unitPrice, totalPrice);
-                    executeRunnableLoop(false, context, itemId, quantities, unitPrice, totalPrice);
+                    executeRunnableLoop(false, context, itemId, quantities, unitPrice);
                 } else {
                     Toast.makeText(context, context.getResources().getString(R.string.msg_quantity_cannot_be_less_than_one), Toast.LENGTH_SHORT).show();
                 }
