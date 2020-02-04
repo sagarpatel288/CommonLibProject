@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/view_group_root_cl_rv_no_data_no_search"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!--region RecyclerView-->
+        <FrameLayout
+            android:id="@+id/view_group_fl_include_rv_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <include
+                android:id="@+id/include_rv"
+                layout="@layout/lay_rv" />
+
+        </FrameLayout>
+        <!--endregion-->
+
+        <!--region No data ui-->
+        <FrameLayout
+            android:id="@+id/view_group_fl_include_no_data_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <include
+                android:id="@+id/include_no_data"
+                layout="@layout/lay_no_data" />
+
+        </FrameLayout>
+        <!--endregion-->
+
+        <!--region No search result ui-->
+        <FrameLayout
+            android:id="@+id/view_group_fl_no_include_no_search_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/dim_view_space_28"
+            >
+
+            <include android:id="@+id/include_no_search"
+                layout="@layout/lay_no_search_result_ui"
+                />
+
+        </FrameLayout>
+        <!--endregion-->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

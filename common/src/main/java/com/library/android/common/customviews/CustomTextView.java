@@ -9,9 +9,9 @@ import android.text.style.ScaleXSpan;
 import android.util.AttributeSet;
 
 import com.library.android.common.R;
-import com.library.android.common.utils.TypefaceUtils;
 
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 
 public class CustomTextView extends AppCompatTextView {
@@ -19,10 +19,9 @@ public class CustomTextView extends AppCompatTextView {
     /**
      * An int {@link android.graphics.Color} to set as for {@link android.widget.TextView#setTextColor(int)} with alpha color state list
      */
-    private int btnTxtColor;
-    private int btnTxtPressedColor;
+    private int ctvTextColor;
+    private int ctvPressedColor;
     private boolean isAlphaPressedColor;
-    private int btnTxtTypeface;
     private CharSequence originalText;
     private float letterSpacing = Spacing.NO_CHAR_SPACE;
     private float charSpacing = Spacing.NO_CHAR_SPACE;
@@ -40,14 +39,11 @@ public class CustomTextView extends AppCompatTextView {
 
     private void customizeView(Context context, AttributeSet attrs) {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CustomTextView, 0, 0);
-        setCustomTypeface(typedArray); //Sets custom typeface
         setAlphaColorStates(typedArray); //Sets alpha color state list
+        setCtvTextColor(typedArray);
         setCharSpacing(typedArray);
-    }
-
-    private void setCustomTypeface(TypedArray typedArray) {
-        int typeface = typedArray.getInteger(R.styleable.CustomTextView_typeface, 0);
-        setBtnTxtTypeface(typeface);
+        // comment by srdpatel: 11/10/2019 https://inthecheesefactory.com/blog/fragment-state-saving-best-practices/en
+        setFreezesText(true);
     }
 
     /**
@@ -61,22 +57,15 @@ public class CustomTextView extends AppCompatTextView {
      * @since 1.0
      */
     private void setAlphaColorStates(TypedArray typedArray) {
-        setBtnTxtColor(typedArray.getInteger(R.styleable.CustomTextView_btnTxtColor, 0));
-        setBtnTxtPressedColor(typedArray.getInteger(R.styleable.CustomTextView_btnTxtPressedColor, 0));
-        setAlphaPressedColor(typedArray.getBoolean(R.styleable.CustomTextView_btnHasAlphaPressedColor, false));
+        setAlphaPressedColor(typedArray.getBoolean(R.styleable.CustomTextView_ctvHasAlphaPressedColor, false));
 //        typedArray.recycle();
-    }
-
-    private void setCharSpacing(TypedArray typedArray) {
-        charSpacing = typedArray.getFloat(R.styleable.CustomTextView_charSpacing, 0);
-        setCharSpacing(charSpacing);
-        typedArray.recycle();
     }
 
     /**
      * Sets color state list (selector) programmatically
      * <p>
      * This works same as how selector drawable works.
+     * Consider it like the if-else statements.
      * <p>
      * Being used in {@link #setAlphaColorStates(TypedArray)}
      *
@@ -91,8 +80,8 @@ public class CustomTextView extends AppCompatTextView {
         };
 
         int[] colors = new int[]{
-                getBtnTxtPressedColor() == 0 ? getAlphaTxtColor(btnTxtColor) : getBtnTxtPressedColor(),
-                getBtnTxtPressedColor() == 0 ? getAlphaTxtColor(btnTxtColor) : getBtnTxtPressedColor(),
+                getCtvPressedColor() == 0 || getCtvPressedColor() == -1 ? getAlphaTxtColor(btnTxtColor) : getCtvPressedColor(),
+                getCtvPressedColor() == 0 || getCtvPressedColor() == -1 ? getAlphaTxtColor(btnTxtColor) : getCtvPressedColor(),
                 btnTxtColor
         };
         ColorStateList colorStateList = new ColorStateList(states, colors);
@@ -100,24 +89,29 @@ public class CustomTextView extends AppCompatTextView {
     }
 
     /**
-     * Gives the value of {@link #btnTxtColor} programmatically
+     * Gives the value of {@link #ctvTextColor} programmatically
      *
      * @since 1.0
      */
-    private int getBtnTxtColor() {
-        return btnTxtColor;
+    private int getCtvTextColor() {
+        return ctvTextColor;
+    }
+
+    public void setCtvTextColor(TypedArray typedArray) {
+        setCtvPressedColor(typedArray.getColor(R.styleable.CustomTextView_ctvPressedColor, 0));
+        setCtvTextColor(typedArray.getColor(R.styleable.CustomTextView_ctvTextColor, ContextCompat.getColor(getContext(), android.R.color.black)));
     }
 
     /**
-     * Sets the value of {@link #btnTxtColor} programmatically
+     * Sets the value of {@link #ctvTextColor} programmatically
      *
-     * @param btnTxtColor A {@link #btnTxtColor} to be set for {@link CustomTextView}
+     * @param ctvTextColor A {@link #ctvTextColor} to be set for {@link CustomTextView}
      * @since 1.0
      */
-    public void setBtnTxtColor(int btnTxtColor) {
-        setTextColor(btnTxtColor);
-        this.btnTxtColor = btnTxtColor;
-        setColorStateList(getBtnTxtColor());
+    public void setCtvTextColor(int ctvTextColor) {
+        setTextColor(ctvTextColor);
+        this.ctvTextColor = ctvTextColor;
+        setColorStateList(getCtvTextColor());
     }
 
     private void applyLetterSpace() {
@@ -146,12 +140,12 @@ public class CustomTextView extends AppCompatTextView {
     }
 
     /**
-     * Gives the value of {@link #btnTxtPressedColor} programmatically
+     * Gives the value of {@link #ctvPressedColor} programmatically
      *
      * @since 1.0
      */
-    public int getBtnTxtPressedColor() {
-        return btnTxtPressedColor;
+    public int getCtvPressedColor() {
+        return ctvPressedColor;
     }
 
     /**
@@ -162,8 +156,8 @@ public class CustomTextView extends AppCompatTextView {
      * <p>
      * Being used in {@link #setColorStateList(int)}
      *
-     * @param color A {@link #btnTxtColor} either set through xml or by programmatically
-     * @return New value for {@link #btnTxtColor} having alpha channel added
+     * @param color A {@link #ctvTextColor} either set through xml or by programmatically
+     * @return New value for {@link #ctvTextColor} having alpha channel added
      * @since 1.0
      */
     private int getAlphaTxtColor(int color) {
@@ -171,13 +165,13 @@ public class CustomTextView extends AppCompatTextView {
     }
 
     /**
-     * Sets the value of {@link #btnTxtPressedColor} programmatically
+     * Sets the value of {@link #ctvPressedColor} programmatically
      *
-     * @param btnTxtPressedColor A {@link #btnTxtPressedColor} to be set for {@link CustomTextView}
+     * @param ctvPressedColor A {@link #ctvPressedColor} to be set for {@link CustomTextView}
      * @since 1.0
      */
-    public void setBtnTxtPressedColor(int btnTxtPressedColor) {
-        this.btnTxtPressedColor = btnTxtPressedColor;
+    public void setCtvPressedColor(int ctvPressedColor) {
+        this.ctvPressedColor = ctvPressedColor;
     }
 
     public CustomTextView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -209,6 +203,12 @@ public class CustomTextView extends AppCompatTextView {
         return charSpacing;
     }
 
+    private void setCharSpacing(TypedArray typedArray) {
+        charSpacing = typedArray.getFloat(R.styleable.CustomTextView_charSpacing, 0);
+        setCharSpacing(charSpacing);
+        typedArray.recycle();
+    }
+
     public void setCharSpacing(float charSpacing) {
         // Note: 10/25/2018 by sagar  https://stackoverflow.com/questions/5133548/how-to-change-letter-spacing-in-a-textview
         this.charSpacing = charSpacing;
@@ -232,58 +232,6 @@ public class CustomTextView extends AppCompatTextView {
      */
     public void setAlphaPressedColor(boolean hasAlphaPressedColor) {
         this.isAlphaPressedColor = hasAlphaPressedColor;
-    }
-
-    /**
-     * Gives the value of {@link #btnTxtTypeface} programmatically
-     *
-     * @since 1.0
-     */
-    public int getBtnTxtTypeface() {
-        return btnTxtTypeface;
-    }
-
-    /**
-     * Sets the value of {@link #btnTxtTypeface} programmatically
-     *
-     * @param btnTxtTypeface A {@link #btnTxtTypeface} to be set for {@link CustomTextView}
-     * @since 1.0
-     */
-    public void setBtnTxtTypeface(int btnTxtTypeface) {
-        this.btnTxtTypeface = btnTxtTypeface;
-        switch (btnTxtTypeface) {
-            case TypefaceUtils.INT_CODE_REGULAR:
-                setTypeface(TypefaceUtils.getInstance().getRegularTypeface(getContext()));
-                break;
-
-            case TypefaceUtils.INT_CODE_REGULAR_ITALIC:
-                setTypeface(TypefaceUtils.getInstance().getRegularItalicTypeface(getContext()));
-                break;
-
-            case TypefaceUtils.INT_CODE_LIGHT:
-                setTypeface(TypefaceUtils.getInstance().getLightTypeface(getContext()));
-                break;
-
-            case TypefaceUtils.INT_CODE_LIGHT_ITALIC:
-                setTypeface(TypefaceUtils.getInstance().getLightItalicTypeface(getContext()));
-                break;
-
-            case TypefaceUtils.INT_CODE_BOLD:
-                setTypeface(TypefaceUtils.getInstance().getBoldTypeface(getContext()));
-                break;
-
-            case TypefaceUtils.INT_CODE_BOLD_ITALIC:
-                setTypeface(TypefaceUtils.getInstance().getBoldItalicTypeface(getContext()));
-                break;
-
-            case TypefaceUtils.INT_CODE_BOLD_HEAVY:
-                setTypeface(TypefaceUtils.getInstance().getBoldHeavyTypeface(getContext()));
-                break;
-
-            default:
-                setTypeface(TypefaceUtils.getInstance().getRegularTypeface(getContext()));
-                break;
-        }
     }
 
     @Override

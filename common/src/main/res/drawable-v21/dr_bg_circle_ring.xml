@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-        android:color="@color/colorOrange"
-    >
+    android:color="@color/comColorOrange">
 
-    <item android:drawable="@drawable/bg_ring_base">
-    </item>
+    <item android:drawable="@drawable/dr_bg_ring_base"></item>
 
 </ripple>

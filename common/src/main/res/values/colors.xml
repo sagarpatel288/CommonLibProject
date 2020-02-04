@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--Color for toolbar, actionBar etc...-->
-    <color name="colorPrimary">@color/colorOrange</color>
+    <color name="comColorPrimary">@color/comColorOrange</color>
     <!--Color for TextView-->
-    <color name="colorBlack">#000000</color>
+    <color name="comColorBlack">#000000</color>
+    <color name="comColorPressedBlack">#80000000</color>
     <!--Color for Product list item imageview border-->
-    <color name="colorTranslucentStatusbar">#649c7c7c</color>
+    <color name="comColorTranslucentStatusbar">#649c7c7c</color>
+    <color name="comColorTransparent">#00000000</color>
     <!-- Darker variant for the status bar and contextual app bars -->
-    <color name="colorPrimaryDark">@color/colorAccent</color>
+    <color name="comColorPrimaryDark">@color/comColorAccent</color>
     <!-- Accent color for UI controls like checkboxes and text fields -->
-    <color name="colorAccent">#D81B60</color>
+    <color name="comColorAccent">#D81B60</color>
     <!-- Control widget customization color : Image border, round button border-->
-    <color name="colorOrange">#e57373</color>
+    <color name="comColorOrange">#e57373</color>
     <!-- Control widget filled color. Eg Default circular image, round button-->
-    <color name="colorWhite">#ffffff</color>
+    <color name="comColorWhite">#ffffff</color>
 </resources>

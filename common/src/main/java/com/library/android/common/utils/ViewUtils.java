@@ -4,13 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.library.android.common.appconstants.AppConstants;
+import com.library.android.common.baseconstants.BaseConstants;
 import com.library.android.common.ui.baseui.GlideApp;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -118,9 +120,17 @@ public final class ViewUtils {
                     try {
                         view.setOnClickListener((View.OnClickListener) activity);
                     } catch (Exception e) {
-                        d(AppConstants.TAG, "ViewUtils: setOnClickListener: host activity needs to implement View.OnClickListener");
+                        d(BaseConstants.TAG, "ViewUtils: setOnClickListener: host activity needs to implement View.OnClickListener");
                     }
                 }
+            }
+        }
+    }
+
+    public static void setOnClickListener(View.OnClickListener onClickListener, View... views) {
+        if (views != null && views.length > 0) {
+            for (View view : views) {
+                view.setOnClickListener(onClickListener);
             }
         }
     }
@@ -133,7 +143,7 @@ public final class ViewUtils {
                     try {
                         view.setOnFocusChangeListener((View.OnFocusChangeListener) activity);
                     } catch (Exception e) {
-                        d(AppConstants.TAG, "ViewUtils: setOnFocusChangeListener: host activity needs to implement View.setOnFocusChangeListener");
+                        d(BaseConstants.TAG, "ViewUtils: setOnFocusChangeListener: host activity needs to implement View.setOnFocusChangeListener");
                     }
                 }
             }
@@ -148,9 +158,17 @@ public final class ViewUtils {
                     try {
                         view.setOnTouchListener((View.OnTouchListener) activity);
                     } catch (Exception e) {
-                        d(AppConstants.TAG, "ViewUtils: setOnTouchListener: host activity needs to implement View.setOnTouchListener");
+                        d(BaseConstants.TAG, "ViewUtils: setOnTouchListener: host activity needs to implement View.setOnTouchListener");
                     }
                 }
+            }
+        }
+    }
+
+    public static void addTextWatcher(TextWatcher textWatcher, EditText... editTexts) {
+        if (editTexts != null && editTexts.length > 0) {
+            for (EditText editText : editTexts) {
+                editText.addTextChangedListener(textWatcher);
             }
         }
     }

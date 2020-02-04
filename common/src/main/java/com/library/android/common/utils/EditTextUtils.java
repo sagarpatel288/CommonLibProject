@@ -16,7 +16,7 @@ public final class EditTextUtils {
 
     public static String getString(EditText editText) {
         if (editText != null) {
-            return editText.getText().toString();
+            return editText.getText().toString().trim();
         } else {
             return "";
         }

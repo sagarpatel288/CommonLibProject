@@ -5,7 +5,8 @@ import com.bumptech.glide.module.AppGlideModule;
 
 /**
  * Do not make it private otherwise glide will not be able to access this class
- * @since  1.0
+ *
+ * @since 1.0
  */
 @GlideModule
 public final class GlideAppModule extends AppGlideModule {

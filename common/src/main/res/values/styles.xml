@@ -1,12 +1,12 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
         <!-- Customize your theme here. -->
         <!--color for toolbar, actionBar-->
         <item name="colorPrimary">@color/design_default_color_primary</item>
         <!--color for statusBar-->
-        <item name="colorPrimaryDark">@color/colorTranslucentStatusbar</item>
+        <item name="colorPrimaryDark">@color/comColorTranslucentStatusbar</item>
         <!--Color for checked and selected status for radioButton, checkBox etc...-->
         <item name="colorAccent">@android:color/white</item>
         <!-- Background color of buttons in the app -->
@@ -31,8 +31,8 @@
 
     <!--TextView Title (Heading 1) Style-->
     <style name="TvTitle">
-        <item name="android:textSize">@dimen/tv_title</item>
-        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:textSize">@dimen/dim_tv_title</item>
+        <item name="android:textColor">@color/comColorBlack</item>
         <item name="android:textStyle">bold</item>
     </style>
 
@@ -48,7 +48,7 @@
 
     <!--TextView Subtitle (Heading 2) Style-->
     <style name="TvSubtitle" parent="TvTitle">
-        <item name="android:textSize">@dimen/tv_subtitle</item>
+        <item name="android:textSize">@dimen/dim_tv_subtitle</item>
         <item name="android:textStyle">normal</item>
     </style>
 
@@ -60,6 +60,17 @@
         <item name="android:marqueeRepeatLimit">marquee_forever</item>
         <item name="android:scrollHorizontally">true</item>
         <item name="android:freezesText">true</item>
+    </style>
+
+    <!-- Toolbar theme -->
+    <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:editTextColor">@android:color/white</item>
+        <item name="android:textColorHint">@android:color/white</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
+        <item name="actionMenuTextColor">@android:color/white</item>
+        <item name="actionOverflowButtonStyle">@android:color/white</item>
+        <item name="drawerArrowStyle">@android:color/white</item>
     </style>
 
 </resources>

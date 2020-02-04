@@ -1,31 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="CustomTextView">
-        <!--Replace fonts by better font family-->
-        <attr name="typeface" format="enum">
-            <enum name="regular" value="1"/>
-            <enum name="regular_italic" value="2"/>
-            <enum name="light" value="3"/>
-            <enum name="light_italic" value="4"/>
-            <enum name="bold" value="5"/>
-            <enum name="bold_italic" value="6"/>
-            <enum name="bold_heavy" value="7"/>
-        </attr>
-        <attr name="btnTxtColor" format="color"/>
-        <attr name="btnTxtPressedColor" format="color"/>
-        <attr name="btnRippleColor" format="color"/>
-        <attr name="btnHasAlphaPressedColor" format="boolean"/>
-        <attr name="btnGradientCornerRadius" format="float"/>
-        <attr name="btnGradientOrientation" format="enum"/>
-        <attr name="btnGradientStartColor" format="color"/>
-        <attr name="btnGradientCenterColor" format="color"/>
-        <attr name="btnGradientEndColor" format="color"/>
-        <attr name="btnCornerRadius" format="float"/>
-        <attr name="btnRightBottomRadius" format="float"/>
-        <attr name="btnLeftBottomRadius" format="float"/>
-        <attr name="btnLeftTopRadius" format="float"/>
-        <attr name="btnRightTopRadius" format="float"/>
-        <attr name="btnHasGradientCustomization" format="boolean"/>
-        <attr name="charSpacing" format="float"/>
+        <attr name="ctvTextColor" format="color" />
+        <attr name="ctvPressedColor" format="color" />
+        <attr name="ctvRippleColor" format="color" />
+        <attr name="ctvHasAlphaPressedColor" format="boolean" />
+        <attr name="ctvGradientCornerRadius" format="float" />
+        <attr name="ctvGradientOrientation" format="enum" />
+        <attr name="ctvGradientStartColor" format="color" />
+        <attr name="ctvGradientCenterColor" format="color" />
+        <attr name="ctvGradientEndColor" format="color" />
+        <attr name="ctvCornerRadius" format="float" />
+        <attr name="ctvRightBottomRadius" format="float" />
+        <attr name="ctvLeftBottomRadius" format="float" />
+        <attr name="ctvLeftTopRadius" format="float" />
+        <attr name="ctvRightTopRadius" format="float" />
+        <attr name="ctvHasGradientCustomization" format="boolean" />
+        <attr name="charSpacing" format="float" />
     </declare-styleable>
 </resources>

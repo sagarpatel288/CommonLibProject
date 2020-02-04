@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/view_coordinator_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/view_app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dim_zero"
+            android:background="@color/comColorTransparent"
+            android:padding="@dimen/dim_zero">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:background="@color/comColorPrimary"
+                app:layout_scrollFlags="scroll"
+                app:titleTextColor="@color/comColorWhite">
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/view_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingBottom="200dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:itemCount="10"
+            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_email"
+            tools:spanCount="2">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <FrameLayout
+            android:id="@+id/view_group_fl_include_no_data_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_gravity="center_vertical"
+            >
+
+            <include android:id="@+id/include_no_data"
+                layout="@layout/lay_no_data"
+                />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/view_group_fl_include_no_search_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"
+            >
+
+            <include android:id="@+id/include_no_search"
+                layout="@layout/lay_no_search_result_ui"
+                />
+
+        </FrameLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabCompose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="16dp"
+            app:backgroundTint="@color/comColorPrimary"
+            app:fabSize="normal"
+            app:srcCompat="@android:drawable/ic_menu_edit"
+            app:useCompatPadding="true" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
