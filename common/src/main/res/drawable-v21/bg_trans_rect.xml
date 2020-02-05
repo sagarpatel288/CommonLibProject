@@ -3,7 +3,7 @@
         android:color="@color/colorWhite"
     >
 
-    <item android:drawable="@drawable/bg_trans_rect_base">
+    <item android:drawable="@drawable/dr_bg_trans_rect_base">
     </item>
 
 </ripple>
