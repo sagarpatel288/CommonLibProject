@@ -17,7 +17,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.5.3'
 //        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
         classpath 'com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'
         // TODO Upgrade to 9.0.0 when released and use ${butterknife_version}
